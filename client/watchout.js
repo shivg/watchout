@@ -5,13 +5,13 @@ var Player = function() {
 };
 
 var Asteroid = function() {
-  this.x = Math.random();
-  this.y = Math.random();
+  this.x = Math.random() * 0.8 + 0.1;
+  this.y = Math.random() * 0.8 + 0.1;
 };
 
-Asteroid.prototype.move = function() {
-  this.x = Math.random();
-  this.y = Math.random();
+Asteroid.prototype.move = function(){
+  this.x = Math.random() * 0.8 + 0.1;
+  this.y = Math.random() * 0.8 + 0.1;
 };
 
 var player = new Player();
@@ -61,12 +61,17 @@ var asteroidMove = function () {
   });
 };
 
-
-asteroidMove();
+setInterval(asteroidMove, 1000);
 
 //create player
 var player = new Player();
 
+var drag = d3.behavior.drag()
+              .on('drag', function() {
+                d3.select(this)
+                .attr('cx', d3.event.x)
+                .attr('cy', d3.event.y);
+              });
 //add player to board
 svg.selectAll('.player')
   .data([player])
@@ -79,6 +84,7 @@ svg.selectAll('.player')
     return player.y * height+"px";
   })
   .attr("r", "10px")
+  .call(drag)
   .classed('.player');
 
 
