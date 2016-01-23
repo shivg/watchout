@@ -24,14 +24,14 @@ Player.prototype.collisionCheck = function(asteroid) {
 };
 
 var Asteroid = function() {
-  this.x = Math.random() * 0.8 + 0.1;
-  this.y = Math.random() * 0.8 + 0.1;
+  this.x = Math.random() - 0.05;
+  this.y = Math.random() - 0.05;
   this.side = 0.1;
 };
 
 Asteroid.prototype.move = function(){
-  this.x = Math.random() * 0.8 + 0.1;
-  this.y = Math.random() * 0.8 + 0.1;
+  this.x = Math.random() - 0.05;
+  this.y = Math.random() -  0.05;
 };
 
 var player = new Player();
@@ -43,7 +43,7 @@ var height = parseInt(svg.style('height'));
 
 //create asteroids
 var asteroids = [];
-for (var i=0; i < 5; i++) {
+for (var i=0; i < 10; i++) {
   asteroids.push(new Asteroid());
 }
 
@@ -118,8 +118,6 @@ setInterval(function () {
 
 
 //create player
-var player = new Player();
-
 var drag = d3.behavior.drag()
               .on('drag', function() {
                 var cx = d3.event.x;
@@ -130,6 +128,7 @@ var drag = d3.behavior.drag()
                 .attr('cx', cx)
                 .attr('cy', cy);
               });
+
 //add player to board
 svg.selectAll('.player')
   .data([player])
@@ -144,6 +143,7 @@ svg.selectAll('.player')
   .attr("r", function(player) {
     return player.r * (height + width) / 2 + 'px';
   })
+  .attr("fill", "green")
   .call(drag)
   .classed('.player');
 
