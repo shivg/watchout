@@ -1,0 +1,8 @@
+{
+  "name": "socket-io-watchout",
+  "version": "0.0.1",
+  "description": "socket.io app for watchout",
+  "dependencies": {
+    "express": "^4.10.2"
+  }
+}
