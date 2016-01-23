@@ -1,11 +1,39 @@
 
-//global variables
-var currentScore = 0;
-var highScore = 0;
-var collisions = 0;
-var gameOn = true;
 
-// start slingin' some d3 here.
+
+$(document).ready(function(){
+  $('.enemySelect').on('click', function() {
+
+    //enemy selection
+    $(this).toggleClass('selected');
+    svg.selectAll('.asteroid')
+      .attr("xlink:href", $(this).attr('src'));
+
+    $('.enemySelect').not(this).each(function() {
+      $(this).removeClass('selected');
+    });
+  });
+
+  $('.addAsteroids').on('click', function() {
+    asteroids.push(new Asteroid());
+    addAsteroids();
+    $('.numAsteroids').text(asteroids.length);
+  });
+
+  $('.removeAsteroids').on('click', function() {
+    asteroids.pop();
+    removeAsteroids();
+  });
+
+  $('.asteroidSpeed').on('change', function() {
+    speed = $(this).val();
+
+  });
+
+
+});
+
+
 var Player = function() {
   this.x = 0.5;
   this.y = 0.5;
@@ -13,8 +41,6 @@ var Player = function() {
 };
 
 var collisionWorker = new Worker('collisionWorker.js');
-
-
 
 Player.prototype.collisionCheck = function() {
   asteroidD3Selection
@@ -46,7 +72,7 @@ Player.prototype.collisionCheck = function() {
               currentScore++;
               currentD3.text(currentScore);
               }   
-            }
+            };
         }
       }
     });
@@ -72,34 +98,65 @@ var svg = d3.select('.board');
 var width = parseInt(svg.style('width'));
 var height = parseInt(svg.style('height'));
 
+//global variables
+var currentScore = 0;
+var highScore = 0;
+var collisions = 0;
+var gameOn = true;
 
 
-//create asteroids
-var asteroids = [];
-for (var i=0; i < 10; i++) {
-  asteroids.push(new Asteroid());
-}
+
+
+
+var createAsteroids  = function(num) {
+  var asteroids = [];
+  num = num || 5;
+  for (var i=0; i < num; i++) {
+    asteroids.push(new Asteroid());
+  } 
+  return asteroids;
+};
+
+var asteroids = createAsteroids();
+// get references
 
 
 //add asteroids to board
-svg.selectAll('.asteroid')
-  .data(asteroids)
-  .enter()
-  .append('svg:image')
-  .attr("xlink:href", "asteroid.png")
-  .attr("x", function (asteroid) {
-    return asteroid.x * width+"px";
-  })
-  .attr("y", function (asteroid) {
-    return asteroid.y * height+"px";
-  })
-  .attr("width", function(d) {
-    return d.side * width + "px";
-  })
-  .attr("height", function(d) {
-    return d.side * height + "px";
-  })
-  .attr('class', 'asteroid');
+var addAsteroids = function() {
+  svg.selectAll('.asteroid')
+    .data(asteroids)
+    .enter()
+    .append('svg:image')
+    .attr("xlink:href", 'assets/images/asteroid.png')
+    .attr("x", function (asteroid) {
+      return asteroid.x * width+"px";
+    })
+    .attr("y", function (asteroid) {
+      return asteroid.y * height+"px";
+    })
+    .attr("width", function(d) {
+      return d.side * width + "px";
+    })
+    .attr("height", function(d) {
+      return d.side * height + "px";
+    })
+    .attr('class', 'asteroid');
+};
+
+var removeAsteroids = function() {
+  svg.selectAll('.asteroid')
+    .data(asteroids)
+    .exit()
+    .remove();
+};
+
+addAsteroids();
+
+var asteroidD3Selection = d3.selectAll('.asteroid');
+var highScoreD3 = d3.select('.highscore span');
+var currentD3 = d3.select('.current span');
+var collisionD3 = d3.select('.collisions span');
+var speed = 1;
 
 //make asteroids move
 
@@ -108,7 +165,7 @@ var asteroidMove = function () {
     asteroid.move();
     var element = d3.select(this);
     element.transition()
-      .duration(1000)
+      .duration(1000 * speed)
       .attr("x", function (asteroid) {
         return asteroid.x * width+"px";
       })
@@ -119,18 +176,8 @@ var asteroidMove = function () {
   return false;
 };
 
-
-// get references
-var asteroidD3Selection = d3.selectAll('.asteroid');
-var highScoreD3 = d3.select('.highscore span');
-var currentD3 = d3.select('.current span');
-var collisionD3 = d3.select('.collisions span');
-
-
-
-
 //move asteroids
-setInterval(asteroidMove, 1000);
+setInterval(asteroidMove, 1000 * speed);
 
 //check for collisions, incriment scores
 setInterval(function () { 

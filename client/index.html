@@ -4,14 +4,37 @@
     <link rel='stylesheet' type='css' href='styles.css'>
   </head>
   <body>
-    <div class="scoreboard">
+    <div class="menu">
       <!-- Modify the scoreboard when important events occur in your game! -->
-      <div class="highscore">High score: <span>0</span></div>
-      <div class="current">Current score: <span>0</span></div>
-      <div class="collisions">Collisions: <span>0</span></div>
+      <div class="scoreboard">
+        <div class="highscore">High score: <span>0</span></div>
+        <div class="current">Current score: <span>0</span></div>
+        <div class="collisions">Collisions: <span>0</span></div>
+      </div>
+      <div class="options">
+        Number of Enemies: 
+        <span class="numAsteroids">5</span>
+        <button class="removeAsteroids">-</button>
+        <button class="addAsteroids">+</button>
+
+        Enemy Speed
+        <select class="asteroidSpeed">
+          <option selected disabled>Enemy Speed</option>
+          <option value="2">Slow</option>
+          <option value="1" selected>Medium</option>
+          <option value="0.5">Fast</option>
+        </select>
+        <span>Select Your Enemy: 
+          <img src="assets/images/asteroid.png" class="enemySelect selected">
+          <img src="assets/images/nuke.gif" class="enemySelect">
+          <img src="assets/images/twitter.png" class="enemySelect">
+        </span>
+        <button class='button start'>Start Game!</button>
+      </div>
     </div>
     <svg class="board"><div class="mouse"></div></svg>
     <script src="lib/d3.js" charset="utf-8"></script>
+    <script src="lib/jquery-1.12.0.min.js" charset="utf-8"></script>
     <script src='watchout.js'></script>
   </body>
 </html>
