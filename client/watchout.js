@@ -14,11 +14,11 @@ var Player = function() {
 
 var collisionWorker = new Worker('collisionWorker.js');
 
+
+
 Player.prototype.collisionCheck = function() {
-  debugger;
- d3.selectAll('.asteroid')
+  asteroidD3Selection
     .each(function(jsElem) {
-      debugger;
       var domElem = d3.select(this);
       jsElem.x = parseInt(domElem.attr('x')) / width;
       jsElem.y = parseInt(domElem.attr('y')) / height;
@@ -29,50 +29,29 @@ Player.prototype.collisionCheck = function() {
           collisionWorker.postMessage([jsElem, player.x, player.y, player.r]);
 
           collisionWorker.onmessage = function (e) {
-            console.log(e.data);
 
             if(e.data){
               highScore = currentScore > highScore ? currentScore : highScore;
               //set current score to 0
               currentScore = 0;
               collisions++;
-              d3.select('.highscore span').text(highScore);
-              d3.select('.current span').text(currentScore);      
-              d3.select('.collisions span').text(collisions);
+              highScoreD3.text(highScore);
+              currentD3.text(currentScore);      
+              collisionD3.text(collisions);
               gameOn = false;
               setTimeout(function() {
                 gameOn = true;
               }, 1000);
             } else {
               currentScore++;
-              d3.select('.current span').text(currentScore);
+              currentD3.text(currentScore);
               }   
             }
         }
       }
     });
-  };   
+  };
 
-      //   if (player.collisionCheck(jsElem)) {
-      //      //set high score to current score
-         
-      // }
-  
-
-
-
-
-  // if (window.Worker){
-  //   var collisionWorker = new Worker('collisionWorker.js');
-  // }
-  // collisionWorker.postMessage([asteroid, this.x, this.y,this.r]);
-
-  // collisionWorker.onmessage = function (e) {
-  //   console.log(e.data);
-
-  // }
-  // // console.log(result);
-  
 
 
 var Asteroid = function() {
@@ -125,7 +104,7 @@ svg.selectAll('.asteroid')
 //make asteroids move
 
 var asteroidMove = function () {
-  svg.selectAll('.asteroid').each(function (asteroid) {
+  asteroidD3Selection.each(function (asteroid) {
     asteroid.move();
     var element = d3.select(this);
     element.transition()
@@ -140,19 +119,28 @@ var asteroidMove = function () {
   return false;
 };
 
+
+// get references
+var asteroidD3Selection = d3.selectAll('.asteroid');
+var highScoreD3 = d3.select('.highscore span');
+var currentD3 = d3.select('.current span');
+var collisionD3 = d3.select('.collisions span');
+
+
+
+
 //move asteroids
 setInterval(asteroidMove, 1000);
 
 //check for collisions, incriment scores
 setInterval(function () { 
-  player.collisionCheck.call(player);
-}, 10);
+  player.collisionCheck.call();
+}, 100);
 
 
 //create player
 var drag = d3.behavior.drag()
               .on('drag', function() {
-                debugger;
                 var cx = d3.event.x < width && d3.event.x > 0 ? d3.event.x : player.x * width;
                 var cy = d3.event.y < height && d3.event.y > 0 ? d3.event.y : player.y * height;
                 player.x = cx / width;

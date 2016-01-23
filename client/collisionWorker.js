@@ -1,6 +1,6 @@
 
 onmessage = function(e) {
-  console.log('Message received from main script');
+  // console.log('Message received from main script');
   var asteroid = e.data[0];
   var playerX = e.data[1];
   var playerY = e.data[2];
@@ -14,6 +14,5 @@ onmessage = function(e) {
   var check2 = Math.pow(playerR + asteroidR, 2) >= distance;
   var collisionBoolean = check1 && check2;
 
-  console.log('Posting message back to main script');
   postMessage(collisionBoolean);
 };
