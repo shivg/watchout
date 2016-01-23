@@ -12,29 +12,83 @@ var Player = function() {
   this.r = 0.025;
 };
 
+var collisionWorker = new Worker('collisionWorker.js');
 
-Player.prototype.collisionCheck = function(asteroid) {
-  var asteroidX = asteroid.x + asteroid.side / 2;
-  var asteroidY = asteroid.y + asteroid.side / 2;
-  var asteroidR = asteroid.side / 2;
-  var distance = Math.pow(this.x - asteroidX, 2) + Math.pow(this.y - asteroidY, 2);
-  var check1 = Math.pow(this.r - asteroidR, 2) <= distance;
-  var check2 = Math.pow(this.r + asteroidR, 2) >= distance;
-  return check1 && check2;
-};
+Player.prototype.collisionCheck = function() {
+  debugger;
+ d3.selectAll('.asteroid')
+    .each(function(jsElem) {
+      debugger;
+      var domElem = d3.select(this);
+      jsElem.x = parseInt(domElem.attr('x')) / width;
+      jsElem.y = parseInt(domElem.attr('y')) / height;
+      if (gameOn) {
+
+        if (window.Worker){
+          
+          collisionWorker.postMessage([jsElem, player.x, player.y, player.r]);
+
+          collisionWorker.onmessage = function (e) {
+            console.log(e.data);
+
+            if(e.data){
+              highScore = currentScore > highScore ? currentScore : highScore;
+              //set current score to 0
+              currentScore = 0;
+              collisions++;
+              d3.select('.highscore span').text(highScore);
+              d3.select('.current span').text(currentScore);      
+              d3.select('.collisions span').text(collisions);
+              gameOn = false;
+              setTimeout(function() {
+                gameOn = true;
+              }, 1000);
+            } else {
+              currentScore++;
+              d3.select('.current span').text(currentScore);
+              }   
+            }
+        }
+      }
+    });
+  };   
+
+      //   if (player.collisionCheck(jsElem)) {
+      //      //set high score to current score
+         
+      // }
+  
+
+
+
+
+  // if (window.Worker){
+  //   var collisionWorker = new Worker('collisionWorker.js');
+  // }
+  // collisionWorker.postMessage([asteroid, this.x, this.y,this.r]);
+
+  // collisionWorker.onmessage = function (e) {
+  //   console.log(e.data);
+
+  // }
+  // // console.log(result);
+  
+
 
 var Asteroid = function() {
   this.x = Math.random() - 0.05;
   this.y = Math.random() - 0.05;
   this.side = 0.1;
-};
+  };
 
 Asteroid.prototype.move = function(){
   this.x = Math.random() - 0.05;
   this.y = Math.random() -  0.05;
 };
-
+//create player
 var player = new Player();
+
+
 var svg = d3.select('.board');
 var width = parseInt(svg.style('width'));
 var height = parseInt(svg.style('height'));
@@ -90,33 +144,8 @@ var asteroidMove = function () {
 setInterval(asteroidMove, 1000);
 
 //check for collisions, incriment scores
-setInterval(function () {
-  d3.selectAll('.asteroid')
-    .each(function(jsElem) {
-      var domElem = d3.select(this);
-      jsElem.x = parseInt(domElem.attr('x')) / width;
-      jsElem.y = parseInt(domElem.attr('y')) / height;
-      if (gameOn) {
-        if (player.collisionCheck(jsElem)) {
-           //set high score to current score
-          highScore = currentScore > highScore ? currentScore : highScore;
-          //set current score to 0
-          currentScore = 0;
-          collisions++;
-          d3.select('.highscore span').text(highScore);
-          d3.select('.current span').text(currentScore);      
-          d3.select('.collisions span').text(collisions);
-          gameOn = false;
-          setTimeout(function() {
-            gameOn = true;
-          }, 1000);
-        } else {
-          currentScore++;
-          d3.select('.current span').text(currentScore);
-        }        
-      }
-    });
-
+setInterval(function () { 
+  player.collisionCheck.call(player);
 }, 10);
 
 
