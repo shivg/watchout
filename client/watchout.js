@@ -3,6 +3,7 @@
 var currentScore = 0;
 var highScore = 0;
 var collisions = 0;
+var gameOn = true;
 
 // start slingin' some d3 here.
 var Player = function() {
@@ -87,24 +88,35 @@ var asteroidMove = function () {
 
 setInterval(asteroidMove, 1000);
 setInterval(function () {
+  d3.selectAll('.asteroid')
+    .each(function(jsElem) {
+      var domElem = d3.select(this);
+      jsElem.x = parseInt(domElem.attr('x')) / width;
+      jsElem.y = parseInt(domElem.attr('y')) / height;
+      if (gameOn) {
+        if (player.collisionCheck(jsElem)) {
+           //set high score to current score
+          highScore = currentScore > highScore ? currentScore : highScore;
+          //set current score to 0
+          currentScore = 0;
+          collisions++;
+          d3.select('.highscore span').text(highScore);
+          d3.select('.current span').text(currentScore);      
+          d3.select('.collisions span').text(collisions);
+          gameOn = false;
+          setTimeout(function() {
+            gameOn = true;
+          }, 1000);
+        } else {
+          currentScore++;
+          d3.select('.current span').text(currentScore);
+        }        
+      }
+    });
 
-  for (var i = 0; i < asteroids.length; i++) {
-    if(player.collisionCheck(asteroids[i])){
-      //set high score to current score
-      highScore = currentScore > highScore ? currentScore : highScore;
-      //set current score to 0
-      currentScore = 0;
-      //collisions++
-      d3.select('.highscore span').text(highScore);
-      d3.select('.current span').text(currentScore);
-      break;
-
-    } else {
-      currentScore++;
-      d3.select('.current span').text(currentScore);
-    }
-  }
 }, 10);
+
+
 //create player
 var player = new Player();
 
