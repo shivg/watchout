@@ -86,7 +86,10 @@ var asteroidMove = function () {
   return false;
 };
 
+//move asteroids
 setInterval(asteroidMove, 1000);
+
+//check for collisions, incriment scores
 setInterval(function () {
   d3.selectAll('.asteroid')
     .each(function(jsElem) {
@@ -120,8 +123,9 @@ setInterval(function () {
 //create player
 var drag = d3.behavior.drag()
               .on('drag', function() {
-                var cx = d3.event.x;
-                var cy = d3.event.y;
+                debugger;
+                var cx = d3.event.x < width && d3.event.x > 0 ? d3.event.x : player.x * width;
+                var cy = d3.event.y < height && d3.event.y > 0 ? d3.event.y : player.y * height;
                 player.x = cx / width;
                 player.y = cy / height;
                 d3.select(this)
