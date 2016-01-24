@@ -2,6 +2,16 @@
 
 
 $(document).ready(function(){
+
+    // globals
+  var speed;
+  var asteroids;
+  var addAsteroids;
+  var removeAsteroids;
+  var Asteroid;
+  var svg;
+
+
   $('.enemySelect').on('click', function() {
 
     //enemy selection
@@ -23,18 +33,21 @@ $(document).ready(function(){
   $('.removeAsteroids').on('click', function() {
     asteroids.pop();
     removeAsteroids();
+    $('.numAsteroids').text(asteroids.length);
   });
 
   $('.asteroidSpeed').on('change', function() {
     speed = $(this).val();
+  });
 
+  $('.start').on('click', function () {
+    intializeGame();
   });
 
 
-});
-
-
-var Player = function() {
+// this starts everything up
+var intializeGame = function () {
+  var Player = function() {
   this.x = 0.5;
   this.y = 0.5;
   this.r = 0.025;
@@ -80,7 +93,7 @@ Player.prototype.collisionCheck = function() {
 
 
 
-var Asteroid = function() {
+Asteroid = function() {
   this.x = Math.random() - 0.05;
   this.y = Math.random() - 0.05;
   this.side = 0.1;
@@ -94,7 +107,7 @@ Asteroid.prototype.move = function(){
 var player = new Player();
 
 
-var svg = d3.select('.board');
+svg = d3.select('.board');
 var width = parseInt(svg.style('width'));
 var height = parseInt(svg.style('height'));
 
@@ -117,12 +130,12 @@ var createAsteroids  = function(num) {
   return asteroids;
 };
 
-var asteroids = createAsteroids();
+asteroids = createAsteroids();
 // get references
 
 
 //add asteroids to board
-var addAsteroids = function() {
+addAsteroids = function() {
   svg.selectAll('.asteroid')
     .data(asteroids)
     .enter()
@@ -143,7 +156,7 @@ var addAsteroids = function() {
     .attr('class', 'asteroid');
 };
 
-var removeAsteroids = function() {
+removeAsteroids = function() {
   svg.selectAll('.asteroid')
     .data(asteroids)
     .exit()
@@ -156,7 +169,8 @@ var asteroidD3Selection = d3.selectAll('.asteroid');
 var highScoreD3 = d3.select('.highscore span');
 var currentD3 = d3.select('.current span');
 var collisionD3 = d3.select('.collisions span');
-var speed = 1;
+// speed is declared in closure scope
+speed = 1;
 
 //make asteroids move
 
@@ -177,7 +191,7 @@ var asteroidMove = function () {
 };
 
 //move asteroids
-setInterval(asteroidMove, 1000 * speed);
+setInterval(asteroidMove, 1000* speed);
 
 //check for collisions, incriment scores
 setInterval(function () { 
@@ -215,9 +229,9 @@ svg.selectAll('.player')
   .call(drag)
   .classed('.player');
 
+  
+ };
 
-
-
-
+});
 
 

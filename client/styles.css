@@ -52,7 +52,6 @@ Feel free to use it if you like. */
   padding:16px 31px;
   text-decoration:none;
   text-shadow:0px 1px 0px #2f6627;
-  float:right;
 }
 .button:hover {
   background-color:#5cbf2a;
@@ -68,6 +67,15 @@ Feel free to use it if you like. */
 
 .removeAsteroids {
   color: 'red';
+}
+
+.scoreboard {
+  padding: 5px
+  display: inline;
+}
+
+.highscore .current .collisions {
+  display : float;
 }
 
 
