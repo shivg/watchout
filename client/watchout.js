@@ -175,7 +175,7 @@ speed = 1;
 //make asteroids move
 
 var asteroidMove = function () {
-  asteroidD3Selection.each(function (asteroid) {
+  d3.selectAll('.asteroid').each(function (asteroid) {
     asteroid.move();
     var element = d3.select(this);
     element.transition()
@@ -191,7 +191,7 @@ var asteroidMove = function () {
 };
 
 //move asteroids
-setInterval(asteroidMove, 1000* speed);
+setInterval(asteroidMove, 1000 * speed);
 
 //check for collisions, incriment scores
 setInterval(function () { 
